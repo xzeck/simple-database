@@ -13,6 +13,7 @@ void print_prompt()
 int main(int argc, char* argv[])
 {
 
+    // Create a buffer
     InputBuffer* input_buffer = new_input_buffer();
 
     while(true)
@@ -20,6 +21,8 @@ int main(int argc, char* argv[])
         print_prompt();
         read_input(input_buffer);
 
+        // This is for meta commands, any commands that are not an SQL statement is called a meta command
+        // we will use do_meta_command to handle our meta statmeents;
         if(input_buffer->buffer[0] == '.')
         {
             switch(do_meta_command(input_buffer))
@@ -32,8 +35,11 @@ int main(int argc, char* argv[])
             }
         }
 
+        // If the command is an SQL statement
         Statement statement;
 
+        // we need to prepare the statement
+        // Eventually this will understand SQL statments
         switch(prepare_statement(input_buffer, &statement))
         {
             case(PREPARE_SUCCESS):
@@ -43,6 +49,7 @@ int main(int argc, char* argv[])
                 continue;
         }
 
+        // Execute SQL statement
         execute_statement(&statement);
         printf("Executed. \n");
     }
